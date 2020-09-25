@@ -1,0 +1,15 @@
+:root {
+    --text-color: #6c6c80;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f0f0f5;
+    color: var(--text-color);
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+}
