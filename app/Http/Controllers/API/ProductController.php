@@ -9,6 +9,6 @@ use App\Product;
 class ProductController extends Controller
 {
     function index(Request $request) {
-        return Product::paginate(5);
+        return Product::all();
     }
 }

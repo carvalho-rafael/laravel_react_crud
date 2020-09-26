@@ -8,7 +8,7 @@ const DetailPage = () => {
 
     useEffect(() => {
         api.get('products').then(response => {
-            setProducts(response.data.data);
+            setProducts(response.data);
         });
     }, []);
 
