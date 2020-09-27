@@ -26,7 +26,6 @@ class ProductController extends Controller
         $data =
             [
                 "product" => $id,
-                "categories" => Category::all('id','name'),
                 "images" => $id->images()->get('path')
             ];
 

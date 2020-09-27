@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import api from '../../services/api'
+import api from '../../services/api';
+import TinyMce from '../../utils/wysiwyg';
 
 import "./style.css";
 
 function Form(props) {
   const [product, setProduct] = useState(props.product?.product);
-  const [formType, setFormType] = useState(props.type)
+  const [categories, setCategories] = useState([])
+  const buttonLabel = props.buttonLabel
   const { register, handleSubmit, reset } = useForm();
+
+  useEffect(() => {
+    api.get('categories').then(response => {
+      setCategories(response.data);
+    });
+  }, []);
 
   useEffect(() => {
     setProduct(props.product?.product)
@@ -15,21 +23,20 @@ function Form(props) {
 
   useEffect(() => {
     reset({
+      name: product?.name,
       ref: product?.ref,
       resume: product?.resume,
-      description: product?.description,
       price: product?.price,
       quantity: product?.quantity,
       active: product?.active,
-      categoryId: product?.category_id,
+      category_id: product?.category_id,
     });
 
   }, [product]);
 
   const onSubmit = data => {
-    api.put('products/77', data).then(response => {
-      console.log(response)
-  });
+    props?.action?.(data)
+
     alert(JSON.stringify(data));
   };
 
@@ -39,13 +46,16 @@ function Form(props) {
         <div className="row">
           <div className="col-md-8">
             <div>
-              <label htmlFor="resume">Resume</label>
-              <textarea name="resume" placeholder="000" width="100%" ref={register}></textarea>
+              <label htmlFor="name">Name</label>
+              <input name="name" placeholder="name" ref={register} />
             </div>
             <div>
-              <label htmlFor="description">Description</label>
-              <textarea name="description" placeholder="000" ref={register}></textarea>
+              <label htmlFor="resume">Resume</label>
+              <textarea rows="8" name="resume" ref={register}>
+              </textarea>
             </div>
+
+            <TinyMce content={product?.description} reference={register} id={product?.id} />
           </div>
 
           <div className="col-md-2">
@@ -61,11 +71,25 @@ function Form(props) {
               <label htmlFor="price">Price</label>
               <input name="price" placeholder="price" ref={register} />
             </div>
+            <div className="categories-container">
+              {categories?.map((i) => (
+                <div key={i.id}>
+                  <input
+                    id={i.id}
+                    type="radio"
+                    name="category_id"
+                    ref={register}
+                    value={i.id}
+                    defaultChecked={i.id === product?.category_id} />
+                  <label htmlFor={i.id}>{i.name}</label>
+                </div>
+              ))}
+            </div>
             <div>
               <label htmlFor="active">Active</label>
-              <input type="checkbox" name="active" ref={register} />
+              <input type="checkbox" id="active" name="active" ref={register} />
             </div>
-            <input type="submit" value={formType}/>
+            <input type="submit" value={buttonLabel} />
           </div>
         </div>
 

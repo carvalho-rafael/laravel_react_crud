@@ -1,9 +1,10 @@
-import { FiPlus } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
 import DataTable from 'react-data-table-component'
 import * as DatatableConstants from './datatable-constants'
 import api from '../../services/api'
 import React, { useEffect, useState } from 'react';
+import { FiPlus } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
+
 import './style.css'
 
 const FilterComponent = ({ filterText, onFilter, onClear }) => (
@@ -17,7 +18,7 @@ const FilterComponent = ({ filterText, onFilter, onClear }) => (
 const AddButtonComponent = () => (
     <>
         <button className="add-button">
-            <Link to="/detail-page">
+            <Link to='/create-page' >
                 <span>
                     <FiPlus />
                 </span>

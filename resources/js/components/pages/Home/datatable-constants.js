@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FiEdit } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
+
 
 export const ClearButton = styled.button
     `border-top-left-radius: 0;
@@ -30,10 +33,10 @@ export const TextField = styled.input`
 
 export const columns = [
     { name: 'id', selector: (row, index) => row.id, grow: 1, center: true },
-      { name: 'image', selector: (row, index) => row.images[0].path, cell: (row) => imageThumb(row)},
-    { name: 'ref', selector: 'ref', grow:2 },
-    { name: 'name', selector: 'name', grow: 4},
-    { name: 'category', selector: (row, index) => row.category.name},
+    { name: 'image', selector: (row, index) => row.images[0].path, cell: (row) => imageThumb(row) },
+    { name: 'ref', selector: 'ref', grow: 2 },
+    { name: 'name', selector: 'name', grow: 4 },
+    { name: 'category', selector: (row, index) => row.category.name },
     { name: 'price', selector: 'price' },
     { name: 'quantity', selector: 'quantity' },
     { name: 'active', selector: 'active', cell: (row) => isActive(row) },
@@ -49,16 +52,19 @@ function isActive(row) {
 
 function imageThumb(row) {
     const path = row.images[0]?.path;
-    if (path) {
-        return (<img src={path}></img>)
-    }
-    return (<div className="status"></div>)
+    return (<img src={path}></img>)
 }
 
 function rowOptions(row) {
     return (
         <div>
-
+            <button className="update-button">
+                <Link to={{ pathname : '/edit-page', state : {id : row.id}}} >
+                    <span>
+                        <FiEdit />
+                    </span>
+                </Link>
+            </button>
         </div>
     )
 }

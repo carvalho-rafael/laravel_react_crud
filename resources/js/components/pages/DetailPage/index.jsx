@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { FiArrowLeft } from 'react-icons/fi'
-import api from '../../services/api'
 import Edit from './edit';
+import Create from './create';
 
-const DetailPage = () => {
-    const [products, setProducts] = useState([]);
+const DetailPage = (props) => {
+    const id = props.location.state.id;
 
-    useEffect(() => {
-        api.get('products').then(response => {
-            setProducts(response.data);
-        });
-    }, []);
+
 
     return (
         <div>
@@ -21,11 +17,12 @@ const DetailPage = () => {
                 </div>
                 <Link to="/">
                     <FiArrowLeft />
-                        Voltar para Home
+                        Products List
                     </Link>
             </header>
             <main>
-               <Edit></Edit>
+                <Edit id={id}></Edit>
+                <Create></Create>
             </main>
 
 
