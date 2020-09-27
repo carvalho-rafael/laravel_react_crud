@@ -11,6 +11,8 @@ $factory->define(Product::class, function (Faker $faker) {
     return [
         'ref' => $faker->bothify('?###?'),
         'name' => $faker->word,
+        'resume' => $faker->paragraph,
+        'description' => $faker->paragraph,
         'category_id' => function () {
             return factory(Category::class)->create()->id;
         },
