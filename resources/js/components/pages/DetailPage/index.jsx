@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { FiArrowLeft } from 'react-icons/fi'
 import api from '../../services/api'
+import Edit from './edit';
 
 const DetailPage = () => {
     const [products, setProducts] = useState([]);
@@ -24,13 +25,7 @@ const DetailPage = () => {
                     </Link>
             </header>
             <main>
-                <ul className="container md-4">
-                    {products.map(item => (
-                        <li key={item.id}>
-                            <span>{item.name}</span>
-                        </li>
-                    ))}
-                </ul>
+               <Edit></Edit>
             </main>
 
 

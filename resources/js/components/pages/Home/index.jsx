@@ -38,6 +38,8 @@ const Home = () => {
     useEffect(() => {
         api.get('products').then(response => {
             setProducts(response.data)
+
+            console.log(products)
         })
 
     }, [])

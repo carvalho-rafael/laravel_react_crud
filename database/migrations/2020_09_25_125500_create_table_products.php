@@ -19,7 +19,9 @@ class CreateTableProducts extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->string('ref');
             $table->string('name');
-            $table->float('price');
+            $table->text('resume');
+            $table->longText('description');
+            $table->float('price', 8, 2);
             $table->integer('quantity');
             $table->boolean('active');
             $table->timestamps();

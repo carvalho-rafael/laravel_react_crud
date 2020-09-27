@@ -29,10 +29,11 @@ export const TextField = styled.input`
     }`;
 
 export const columns = [
-    { name: 'id', selector: 'id' },
-    { name: 'ref', selector: 'ref' },
-    { name: 'name', selector: 'name' },
-    { name: 'category', selector: 'category' },
+    { name: 'id', selector: (row, index) => row.id, grow: 1, center: true },
+      { name: 'image', selector: (row, index) => row.images[0].path, cell: (row) => imageThumb(row)},
+    { name: 'ref', selector: 'ref', grow:2 },
+    { name: 'name', selector: 'name', grow: 4},
+    { name: 'category', selector: (row, index) => row.category.name},
     { name: 'price', selector: 'price' },
     { name: 'quantity', selector: 'quantity' },
     { name: 'active', selector: 'active', cell: (row) => isActive(row) },
@@ -42,6 +43,14 @@ export const columns = [
 function isActive(row) {
     if (row.active) {
         return (<div className="status active"></div>)
+    }
+    return (<div className="status"></div>)
+}
+
+function imageThumb(row) {
+    const path = row.images[0]?.path;
+    if (path) {
+        return (<img src={path}></img>)
     }
     return (<div className="status"></div>)
 }
