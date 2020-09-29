@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FiEdit } from 'react-icons/fi'
+import { FiEdit, FiDelete } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 
 
@@ -32,34 +32,35 @@ export const TextField = styled.input`
     }`;
 
 export const columns = [
-    { name: 'id', selector: (row, index) => row.id, grow: 1, center: true },
-    { name: 'image', selector: (row, index) => row.images[0].path, cell: (row) => imageThumb(row) },
-    { name: 'ref', selector: 'ref', grow: 2 },
-    { name: 'name', selector: 'name', grow: 4 },
-    { name: 'category', selector: (row, index) => row.category.name },
-    { name: 'price', selector: 'price' },
-    { name: 'quantity', selector: 'quantity' },
-    { name: 'active', selector: 'active', cell: (row) => isActive(row) },
-    { name: '', selector: 'active', cell: (row) => rowOptions(row) },
+    { name: 'id', selector: row => row.product.id, grow: 1, center: true },
+    { name: 'image', selector: row => row.image.path, cell: (row) => imageThumb(row), center: true },
+    { name: 'ref', selector: 'product.ref', grow: .2 },
+    { name: 'name', selector: row => row.product.name, grow: 3 },
+    { name: 'category', selector: row => row.category.name },
+    { name: 'price', selector: 'product.price' },
+    { name: 'quantity', selector: 'product.quantity' },
+    { name: 'active', selector: 'product.active', cell: (row) => isActive(row) },
+    { name: '', selector: 'product.active', cell: (row) => rowOptions(row) },
 ]
 
 function isActive(row) {
-    if (row.active) {
+    row
+    if (row.product.active) {
         return (<div className="status active"></div>)
     }
     return (<div className="status"></div>)
 }
 
 function imageThumb(row) {
-    const path = row.images[0]?.path;
-    return (<img src={path}></img>)
+    const path = row.image?.path;
+    return (<div className="image-thumb-container" ><img className="image-thumb" src={path}></img></div>)
 }
 
 function rowOptions(row) {
     return (
         <div>
             <button className="update-button">
-                <Link to={{ pathname : '/edit-page', state : {id : row.id}}} >
+                <Link to={{ pathname: '/edit-page', state: { id: row.product.id } }} >
                     <span>
                         <FiEdit />
                     </span>

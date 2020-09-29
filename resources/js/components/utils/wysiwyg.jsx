@@ -7,43 +7,44 @@ import "tinymce/plugins/table";
 class TinyMce extends Component {
     constructor() {
         super();
-        this.state = { editor: null, content: '' };
+        this.state = { editor: null, desc: '' };
     }
 
     componentDidMount() {
-        this.setState({ content: this.props?.content }, () => {
-            tinymce.init({
-                selector: "#desc",
-                skin_url: "http://localhost/laraveltest/public/tinymce/skins",
-                plugins: "wordcount table",
-                setup: editor => {
-                    this.setState({ editor });
-                    const content = editor.getContent();
-                    this.setState({ content })
-                    editor.on("keyup change", () => {
-                        const content = editor.getContent();
-                        this.setState({ content })
-                        //this.props.onEditorChange(content);
-                    });
-                }
-            });
-        })
-
-
+        tinymce.init({
+            selector: "#desc",
+            skin_url: "http://localhost/laraveltest/public/tinymce/skins",
+            plugins: "wordcount table",
+            setup: editor => {
+                this.setState({ editor });
+                editor.on("keyup change", () => {
+                    const desc = editor.getContent();
+                    this.setState({ desc })
+                });
+            }
+        });
     }
 
     componentWillUnmount() {
         tinymce.remove(this.state.editor);
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.description !== this.props.description)
+            if (this.props.description != null) {
+                this.setState({ desc: this.props.description })
+                this.state.editor.setContent(this.props.description)
+            }
+    }
     render() {
         return (
             <textarea
                 name="description"
-                ref={this.props?.reference}
+                ref={this.props.reference}
                 id="desc"
-                value={this.state.content}
+                value={this.state.desc}
                 rows="15"
+                required
                 onChange={e => console.log(this.props)}
             />
         );
