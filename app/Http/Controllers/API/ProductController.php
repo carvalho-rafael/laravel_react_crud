@@ -6,6 +6,7 @@ use App\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Product;
+use Dotenv\Result\Result;
 
 class ProductController extends Controller
 {
@@ -16,9 +17,19 @@ class ProductController extends Controller
 
     function index()
     {
-        $products = $this->product->with('category', 'images')->get();
+        $products = $this->product->all();
+        $result = [];
+        $i = 0;
+        foreach ($products as $product) {
+            $i++;
+            $result[] = [
+                'product' => $product,
+                'category' => $product->category()->first('name'),
+                'image' => $product->images()->first()
+            ];
+        }
 
-        return response()->json($products);
+        return response()->json($result);
     }
 
     function show(Product $id)
@@ -40,7 +51,6 @@ class ProductController extends Controller
             $product->update($productData);
 
             return response()->json(['message' => 'ok']);
-            
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
@@ -50,10 +60,22 @@ class ProductController extends Controller
     {
         try {
             $productData = $request->all();
-            $this->product->create($productData);
+            $result = $this->product->create($productData);
+            if ($result)
+                return response()->json(['message' => 'ok']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
+    }
 
-            return response()->json(['message' => 'ok']);
-            
+    public function delete($id)
+    {
+        try {
+            $product = $this->product->find($id);
+            $product->images()->delete();
+            $result = $product->delete();
+            if ($result)
+                return response()->json(['message' => 'ok']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
