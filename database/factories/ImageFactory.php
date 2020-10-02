@@ -9,7 +9,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Image::class, function (Faker $faker) {
     return [
-        'path' => $faker->imageUrl( 400, 200, null, false),
+        'path' => $faker->image('public/storage/images', 100, 100, null, false),
         'product_id' => function () {
             return factory(Product::class)->create()->id;
         }

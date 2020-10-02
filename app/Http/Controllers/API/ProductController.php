@@ -2,53 +2,60 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Product;
-use Dotenv\Result\Result;
+use App\Http\Controllers\API\ImageController;
+use App\Image;
 
 class ProductController extends Controller
 {
-    public function __construct(Product $product)
-    {
+    public function __construct(Product $product) {
         $this->product = $product;
     }
 
-    function index()
-    {
-        $products = $this->product->all();
-        $result = [];
-        $i = 0;
-        foreach ($products as $product) {
-            $i++;
-            $result[] = [
-                'product' => $product,
-                'category' => $product->category()->first('name'),
-                'image' => $product->images()->first()
-            ];
-        }
+    function index() {
+        try {
+            $products = $this->product->all();
+            $result = [];
+            foreach ($products as $product) {
+                $result[] = [
+                    'product' => $product,
+                    'category' => $product->category()->first('name'),
+                    'image' => $product->images()->first()
+                ];
+            }
 
-        return response()->json($result);
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 
-    function show(Product $id)
-    {
-        $data =
-            [
+    function show(Product $id) {
+        try {
+            $data = [
                 "product" => $id,
                 "images" => $id->images()->get('path')
             ];
 
-        return response()->json($data);
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         try {
-            $productData = $request->all();
+            $productData = $request->except('image');
             $product = $this->product->find($id);
             $product->update($productData);
+
+            $imageController = new ImageController(new Image);
+
+            if ($request->has('image')) {
+                $imageController->store($request->image, $product->id);
+            }
 
             return response()->json(['message' => 'ok']);
         } catch (\Exception $e) {
@@ -56,13 +63,17 @@ class ProductController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         try {
             $productData = $request->all();
-            $result = $this->product->create($productData);
-            if ($result)
-                return response()->json(['message' => 'ok']);
+            $product = $this->product->create($productData);
+
+            $imageController = new ImageController(new Image);
+
+            if ($request->has('image')) {
+                $imageController->store($request->image, $product->id);
+            }
+            return response()->json(['message' => 'ok']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
@@ -72,10 +83,14 @@ class ProductController extends Controller
     {
         try {
             $product = $this->product->find($id);
-            $product->images()->delete();
-            $result = $product->delete();
-            if ($result)
-                return response()->json(['message' => 'ok']);
+            
+            $imageController = new ImageController(new Image);
+
+            $imageController->delete($id);
+
+            $product->delete();
+
+            return response()->json(['message' => 'ok']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
