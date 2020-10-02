@@ -4,19 +4,14 @@ import api from '../../services/api';
 import MyEditor from '../../utils/wysiwyg';
 
 import "./style.css";
-const areEqual = (prevProps, nextProps) => true;
 
 const Form = props => {
   const [product, setProduct] = useState(props.product?.product);
   const [categories, setCategories] = useState([])
+  const [images, setImages] = useState([props.product?.images])
   const [description, setDescription] = useState(null)
   const buttonLabel = props.buttonLabel
-  const { register, handleSubmit, reset, errors } = useForm({
-    defaultValues: {
-      description: 'Type something...',
-      category_id: 3
-    }
-  });
+  const { register, handleSubmit, reset, errors, setValue } = useForm();
 
   useEffect(() => {
     api.get('categories').then(response => {
@@ -25,32 +20,58 @@ const Form = props => {
   }, []);
 
   useEffect(() => {
-    if(product == undefined)
-      setProduct(props.product?.product)
-    console.log(product)
+    register({ name: 'image' })
+  }, [register])
+
+  useEffect(() => {
+    setProduct(props.product?.product)
+    setImages(props.product?.images)
   }, [props]);
 
   useEffect(() => {
-    if(product != undefined){
+    if (product != undefined) {
       reset(product)
       setDescription(product?.description)
     }
-    console.log(product)
   }, [product]);
 
-  const onSubmit = data => {
-    props.action?.(data)
+  const handleChange = (e) => {
+    setValue('image', e.target.files[0]);
 
-    alert(JSON.stringify(data));
+  }
+
+  const onSubmit = data => {
+    const formData = new FormData()
+    Object.entries(data).forEach(([key, value]) => {
+      if (key == "active") {
+        value = value == true ? 1 : 0
+      }
+      formData.append(key, value)
+    })
+    /*   for (var key of formData.entries()) {
+        console.log(key[0] + ', ' + key[1]); 
+    } */
+    props.action?.(formData)
   };
 
   return (
     <div className="App container">
-          {console.log(description)}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
           <div className="col-md-8">
+            <div className="image-container">
+              <div className="add-image image-item">
+                <input type="file" name="image" id="image" onChange={handleChange} />
+              </div>
+              {images?.map((image, key) => (
+                <div key={key}>
+                  <div className="image-item">
+                    <img className="image" src={'storage/images/' + image?.path} alt={image?.path} />
+                  </div>
+                </div>
+              ))}
+            </div>
             <div>
               <label htmlFor="name">Name</label>
               <input name="name" placeholder="name" ref={register} />
@@ -60,8 +81,11 @@ const Form = props => {
               <textarea rows="8" name="resume" ref={register}>
               </textarea>
             </div>
+            <div>
+              <label htmlFor="description">Description</label>
 
-            <MyEditor description={description} reference={register} />
+              <MyEditor description={description} reference={register} />
+            </div>
           </div>
 
           <div className="col-md-2">

@@ -61,8 +61,17 @@ const Home = () => {
         const handleDelete = () => {
 
             if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map(r => r.product.name)}?`)) {
-                setToggleCleared(!toggleCleared);
-                setProducts(differenceBy(products, selectedRows, 'product.id'));
+                selectedRows.forEach(row => {
+                    console.log(row)
+                    api.delete('products/' + row.product.id).then(response => {
+                        console.log(response.data.message)
+                        if(response.data.message === 'ok'){
+                            setToggleCleared(!toggleCleared);
+                            setProducts(differenceBy(products, selectedRows, 'product.id'));
+                        }
+                    })
+
+                })
             }
         };
 

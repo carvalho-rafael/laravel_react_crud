@@ -10,7 +10,13 @@ function Edit(props) {
     const id = props.location.state.id;
 
     const updateProduct = (data) => {
-        api.put('products/' + id, data).then(response => {
+        data.append("_method", 'PUT');
+
+        api.post('products/' + id, data/* , {
+            headers: {
+                'Content-Type' : `multipart/form-data; boundary=${data._boundary}`,
+            }
+        } */).then(response => {
             console.log(response)
         })
     }

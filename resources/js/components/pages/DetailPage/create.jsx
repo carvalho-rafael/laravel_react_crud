@@ -7,7 +7,11 @@ import Form from './form';
 function Create(props) {
 
     const createProduct = (data) => {
-        api.post('products', data).then(response => {
+        api.post('products', data, {
+            headers: {
+                'Content-Type' : `multipart/form-data; boundary=${data._boundary}`,
+            }
+        }).then(response => {
             console.log(response)
         })
     }

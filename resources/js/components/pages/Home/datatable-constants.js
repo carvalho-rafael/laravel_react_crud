@@ -53,7 +53,7 @@ function isActive(row) {
 
 function imageThumb(row) {
     const path = row.image?.path;
-    return (<div className="image-thumb-container" ><img className="image-thumb" src={path}></img></div>)
+    return (<div className="image-thumb-container" ><img className="image-thumb" src={'storage/images/' + path}></img></div>)
 }
 
 function rowOptions(row) {

@@ -13,7 +13,7 @@ class TinyMce extends Component {
     componentDidMount() {
         tinymce.init({
             selector: "#desc",
-            skin_url: "http://localhost/laraveltest/public/tinymce/skins",
+            skin_url: "tinymce/skins",
             plugins: "wordcount table",
             setup: editor => {
                 this.setState({ editor });
