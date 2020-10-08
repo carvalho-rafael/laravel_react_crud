@@ -16,8 +16,8 @@ const FilterComponent = ({ filterText, onFilter, onClear }) => (
 );
 
 const AddButton =
-    <button className="">
-        <Link to='/create-page' >
+    <button className="action-button">
+        <Link to='/create-page' className="link">
             <span>
                 <FiPlus />
             </span>
@@ -31,8 +31,8 @@ const Home = () => {
     const [products, setProducts] = useState([])
     const [filterText, setFilterText] = useState('');
 
-    const [toggleCleared, setToggleCleared] = React.useState(false);
-    const [selectedRows, setSelectedRows] = React.useState([]);
+    const [toggleCleared, setToggleCleared] = useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
 
     const filteredItems = products.filter(
         item => item.product.name && item.product.name.toLowerCase()
@@ -62,9 +62,7 @@ const Home = () => {
 
             if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map(r => r.product.name)}?`)) {
                 selectedRows.forEach(row => {
-                    console.log(row)
                     api.delete('products/' + row.product.id).then(response => {
-                        console.log(response.data.message)
                         if(response.data.message === 'ok'){
                             setToggleCleared(!toggleCleared);
                             setProducts(differenceBy(products, selectedRows, 'product.id'));
@@ -75,7 +73,7 @@ const Home = () => {
             }
         };
 
-        return <button key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }} icon>Delete</button>;
+        return <button className="action-button" key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }}>Delete</button>;
     }, [filteredItems, selectedRows, toggleCleared]);
 
     return (

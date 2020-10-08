@@ -3,6 +3,8 @@ import tinymce from "tinymce";
 import "tinymce/themes/silver";
 import "tinymce/plugins/wordcount";
 import "tinymce/plugins/table";
+import "tinymce/plugins/imagetools"
+import "tinymce/plugins/image"
 
 class TinyMce extends Component {
     constructor() {
@@ -14,7 +16,7 @@ class TinyMce extends Component {
         tinymce.init({
             selector: "#desc",
             skin_url: "tinymce/skins",
-            plugins: "wordcount table",
+            plugins: "wordcount table image imagetools",
             setup: editor => {
                 this.setState({ editor });
                 editor.on("keyup change", () => {

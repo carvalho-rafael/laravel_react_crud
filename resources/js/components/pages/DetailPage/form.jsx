@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { FiArrowLeft } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import api from '../../services/api';
 import MyEditor from '../../utils/wysiwyg';
+import ReactHtmlParser from 'react-html-parser'
 
 import "./style.css";
 
 const Form = props => {
   const [product, setProduct] = useState(props.product?.product);
   const [categories, setCategories] = useState([])
+  const [imgUpload, setImgUpload] = useState([])
+  const [formData, setFormData] = useState(new FormData())
   const [images, setImages] = useState([props.product?.images])
   const [description, setDescription] = useState(null)
-  const buttonLabel = props.buttonLabel
-  const { register, handleSubmit, reset, errors, setValue } = useForm();
+
+  const { register, handleSubmit, reset, errors } = useForm();
 
   useEffect(() => {
     api.get('categories').then(response => {
@@ -20,12 +25,11 @@ const Form = props => {
   }, []);
 
   useEffect(() => {
-    register({ name: 'image' })
-  }, [register])
-
-  useEffect(() => {
     setProduct(props.product?.product)
     setImages(props.product?.images)
+
+    if (props.reset)
+      reset()
   }, [props]);
 
   useEffect(() => {
@@ -35,35 +39,82 @@ const Form = props => {
     }
   }, [product]);
 
-  const handleChange = (e) => {
-    setValue('image', e.target.files[0]);
+  useEffect(() => {
+    for (let i = 0; i < imgUpload.length; i++) {
+      const reader = new FileReader();
+      reader.onloadend = e =>
+        document.getElementById("imgUpload" + (i)).src = e.target.result
 
+      reader.readAsDataURL(imgUpload[i])
+    }
+
+  }, [imgUpload]);
+
+
+  const handleChange = (e) => {
+    for (let i = 0; i < e.target.files.length; i++) {
+      const file = e.target.files[i];
+
+      setImgUpload(img => [...img, file])
+
+    }
+  }
+
+  const deleteImgUpload = (image) => {
+    const copy = [...imgUpload]
+    const index = copy.indexOf(image)
+    if (index !== -1) {
+      copy.splice(index, 1)
+      setImgUpload(copy)
+
+    }
   }
 
   const onSubmit = data => {
-    const formData = new FormData()
     Object.entries(data).forEach(([key, value]) => {
       if (key == "active") {
         value = value == true ? 1 : 0
       }
       formData.append(key, value)
     })
+
+    for (let i = 0; i < imgUpload.length; i++) {
+      formData.append('image[]', imgUpload[i])
+    }
+
     /*   for (var key of formData.entries()) {
         console.log(key[0] + ', ' + key[1]); 
     } */
     props.action?.(formData)
+    setFormData(new FormData)
   };
 
   return (
     <div className="App container">
-
+      <button className="back-button">
+        <Link className="link" to="/">
+          <span><FiArrowLeft /></span>
+          Products List
+        </Link>
+      </button>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
           <div className="col-md-8">
             <div className="image-container">
-              <div className="add-image image-item">
-                <input type="file" name="image" id="image" onChange={handleChange} />
+              <div className="img-input-container">
+                <label className="img-input-label" htmlFor="img-input">ADD  IMAGE</label>
+                <input id="img-input" type="file" name="image[]" multiple onChange={handleChange} />
               </div>
+              {imgUpload?.map((image, key) => (
+                <div key={key}>
+                  <div className="image-item">
+                    <button type="button" onClick={() => deleteImgUpload(image)}><span>x</span></button>
+                    <img id={"imgUpload" + (key)} className="image" alt={image} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="image-container">
               {images?.map((image, key) => (
                 <div key={key}>
                   <div className="image-item">
@@ -86,6 +137,9 @@ const Form = props => {
 
               <MyEditor description={description} reference={register} />
             </div>
+            <div>
+              {ReactHtmlParser(description)}
+            </div>
           </div>
 
           <div className="col-md-2">
@@ -105,23 +159,23 @@ const Form = props => {
               {categories?.map((i) => (
                 <div key={i.id}>
                   <input
-                    id={i.id}
+                    id={"category" + i.id}
                     type="radio"
                     name="category_id"
-                    ref={register({ required: true })}
+                    defaultChecked={i.id === product?.category}
                     value={i.id}
-                    defaultChecked={i.id === product?.category_id}
+                    ref={register}
                   />
-                  <label htmlFor={i.id}>{i.name}</label>
+                  <label htmlFor={"category" + i.id}>{i.name}</label>
                 </div>
               ))}
-              {errors.category_id && <div className="form_error">Number of Vehicles is required</div>}
+              {errors.category_id && <div className="form_error">Category is required</div>}
             </label>
             <div>
               <label htmlFor="active">Active</label>
               <input type="checkbox" id="active" name="active" ref={register} />
             </div>
-            <input type="submit" value={buttonLabel} />
+            <input type="submit" value={props.buttonLabel} />
           </div>
         </div>
 

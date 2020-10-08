@@ -9,21 +9,26 @@
     background-color: green;
 }
 
-.add-button{
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    height: 34px;
+.action-button{
+    border-radius: 5px;
+    float: right;
+    padding: 0;
+    margin-left: auto;
+    margin-top: 10px;
     text-align: center;
     display: flex;
     align-items: center;
-    padding: 8px 18px;
-    margin-right: auto;
     justify-content: center;
 }
 
-.add-button span {
+.action-button .link {
+    padding: 10px 10px;
+    margin: 0;
+    text-decoration: none;
+
+}
+
+.action-button span {
     font-size: 18px;
     font-weight: 900;
     margin-right: 5px;
