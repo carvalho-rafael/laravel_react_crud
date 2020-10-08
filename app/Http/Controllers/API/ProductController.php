@@ -53,8 +53,12 @@ class ProductController extends Controller
 
             $imageController = new ImageController(new Image);
 
-            if ($request->has('image')) {
-                $imageController->store($request->image, $product->id);
+            $images = $request->file('image');
+
+            if ($request->hasFile('image')) {
+                foreach($images as $im){
+                    $imageController->store($im, $product->id);
+                }
             }
 
             return response()->json(['message' => 'ok']);
@@ -69,9 +73,13 @@ class ProductController extends Controller
             $product = $this->product->create($productData);
 
             $imageController = new ImageController(new Image);
+            
+            $images = $request->file('image');
 
-            if ($request->has('image')) {
-                $imageController->store($request->image, $product->id);
+            if ($request->hasFile('image')) {
+                foreach($images as $im){
+                    $imageController->store($im, $product->id);
+                }
             }
             return response()->json(['message' => 'ok']);
         } catch (\Exception $e) {
@@ -86,7 +94,7 @@ class ProductController extends Controller
             
             $imageController = new ImageController(new Image);
 
-            $imageController->delete($id);
+            $imageController->deleteByProduct($id);
 
             $product->delete();
 

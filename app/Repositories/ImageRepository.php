@@ -7,7 +7,7 @@ class ImageRepository
 {
     public function saveImage($image) {
         if (!is_null($image)) {
-            $extension = $image->getClientOriginalExtension();
+            $extension = $image->getClientOriginalName();
             $fileName = date('Y-m-d_H:i:s') .'.' . $extension; 
 
             $image->storeAs('public/images', $fileName);

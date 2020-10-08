@@ -6,21 +6,21 @@ use App\Image;
 use App\Repositories\ImageRepository;
 use App\Http\Controllers\Controller;
 
-class ImageController extends Controller
-{
+class ImageController extends Controller {
 
     public function __construct(Image $image) {
         $this->image = $image;
     }
 
-    public function store($image, $product_id) {
+    public function store($requestImage, $product_id) {
         try {
+            $image = new Image();
             $repo = new ImageRepository;
-            $filename = $repo->saveImage($image);
+            $filename = $repo->saveImage($requestImage);
 
-            $this->image->path = $filename;
-            $this->image->product_id = $product_id;
-            $this->image->save();
+            $image->path = $filename;
+            $image->product_id = $product_id;
+            $image->save();
 
             return response()->json(['message' => $filename]);
         } catch (\Exception $e) {
@@ -28,12 +28,12 @@ class ImageController extends Controller
         }
     }
 
-    public function delete($product_id) {
+    public function deleteByProduct($product_id) {
         try{
             foreach($this->image->where('product_id', $product_id)->cursor() as $item){
-                
-                unlink(public_path('/storage/images/' . $item->path));
                 $item->delete();
+                if(file_exists('/storage/images/' . $item->path))           
+                    unlink(public_path('/storage/images/' . $item->path));
             };
 
             return response()->json(['message' => 'ok']);
