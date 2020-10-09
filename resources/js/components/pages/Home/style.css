@@ -40,3 +40,12 @@
     width: 50px;
     height: 50px;
 }
+
+.update-button {
+    display: block;
+}
+
+.update-button a {
+    padding: 10px;
+    margin: 0;
+}

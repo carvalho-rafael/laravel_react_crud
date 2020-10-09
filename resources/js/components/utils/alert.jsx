@@ -1,20 +1,18 @@
 import React from 'react'
 
 const Alert = props => {
-    content = props.content;
 
-    return (
-        
-        <div 
-        className={`alert alert-${props.alertType} alert-dismissible fade ${props.alert ? 'show' : ''}`} 
-        role="alert"
-        >
-        <strong>{props.content}</strong>
-        {/* <button type="button" class="close" onClick={()=> props.setAlert(false)} aria-label="Close">
+  return (
+    <div
+      className={`alert alert-${props.alertType} alert-dismissible fade ${props.alert ? 'show' : ''}`}
+      role="alert"
+    >
+      <strong>{props.content}</strong>
+      {/* <button type="button" class="close" onClick={()=> props.setAlert(false)} aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button> */}
-      </div>
-    )
+    </div>
+  )
 }
 
 export default Alert;

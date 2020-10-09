@@ -7,11 +7,12 @@ function Edit(props) {
 
     const [product, setProduct] = useState([])
     const id = props.location.state.id;
+    const [sent, setSent] = useState(false)
 
     const [alert, setAlert] = useState(false)
     const [alertType, setAlertType] = useState("success")
     const [alertContent, setAlertContent] = useState("Registro cadastrado com sucesso!!")
-
+    const [isLoading, setIsLoading] = useState(false)
 
     const updateProduct = (data) => {
         data.append("_method", 'PUT');
@@ -21,12 +22,17 @@ function Edit(props) {
                 'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
             }
         }).then(response => {
+            setIsLoading(false)
+            setIsLoading(true)
             if (response.data.message !== "ok") {
                 setAlertContent("Erro ao Cadastrar Produto :( Tente novamente!")
                 setAlertType("danger")
             } else {
                 setAlertContent("Registro cadastrado com sucesso!!")
                 setAlertType("success")
+                setSent(true)
+                setSent(false)
+                getProduct()
             }
             setAlert(true)
             setTimeout(() =>
@@ -34,11 +40,13 @@ function Edit(props) {
             )
         })
     }
-
-    useEffect(() => {
+    const getProduct = () => {
         api.get('products/' + id).then(response => {
             setProduct(response.data);
         });
+    }
+    useEffect(() => {
+        getProduct()
     }, []);
 
     return (
@@ -46,7 +54,7 @@ function Edit(props) {
             <header>
                 <Alert content={alertContent} alert={alert} alertType={alertType}></Alert>
             </header>
-            <Form product={product} buttonLabel={"update"} action={updateProduct} />
+            <Form product={product} buttonLabel={"update"} action={updateProduct} sent={sent} isLoading={isLoading}/>
         </>
     )
 }

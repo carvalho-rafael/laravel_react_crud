@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { FiArrowLeft } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import api from '../../services/api';
+
 import MyEditor from '../../utils/wysiwyg';
 import ReactHtmlParser from 'react-html-parser'
+
+import { Link } from 'react-router-dom'
+import { FiArrowLeft } from 'react-icons/fi'
 
 import "./style.css";
 
@@ -15,6 +17,7 @@ const Form = props => {
   const [formData, setFormData] = useState(new FormData())
   const [images, setImages] = useState([props.product?.images])
   const [description, setDescription] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { register, handleSubmit, reset, errors } = useForm();
 
@@ -25,12 +28,28 @@ const Form = props => {
   }, []);
 
   useEffect(() => {
+    setDescription(null)
     setProduct(props.product?.product)
     setImages(props.product?.images)
 
+    if (props.sent) {
+      setImgUpload([])
+    }
+  }, [props.product]);
+
+  useEffect(() => {
     if (props.reset)
       reset()
-  }, [props]);
+  }, [props.reset]);
+
+  useEffect(() => {
+    setIsLoading(false)
+  }, [props.isLoading]);
+
+  useEffect(() => {
+    if (props.sent)
+      setImgUpload([])
+  }, [props.sent]);
 
   useEffect(() => {
     if (product != undefined) {
@@ -60,17 +79,41 @@ const Form = props => {
     }
   }
 
-  const deleteImgUpload = (image) => {
-    const copy = [...imgUpload]
+  const deleteImgFromArray = (image, array) => {
+    const copy = [...array]
     const index = copy.indexOf(image)
     if (index !== -1) {
       copy.splice(index, 1)
-      setImgUpload(copy)
+      return copy
+    }
+    return -1
+  }
 
+  const deleteImgUpload = (image) => {
+    const imgArray = deleteImgFromArray(image, imgUpload)
+
+    if (imgArray !== -1) {
+      setImgUpload(imgArray)
     }
   }
 
+  const deleteImage = (image) => {
+    setIsLoading(true)
+
+    api.delete('images/' + image.id).then(response => {
+      if (response.data.message === 'ok') {
+        setIsLoading(false)
+        const imgArray = deleteImgFromArray(image, images)
+
+        if (imgArray !== -1)
+          setImages(imgArray)
+      }
+    });
+  };
+
   const onSubmit = data => {
+    setIsLoading(true)
+    console.log(isLoading)
     Object.entries(data).forEach(([key, value]) => {
       if (key == "active") {
         value = value == true ? 1 : 0
@@ -82,15 +125,13 @@ const Form = props => {
       formData.append('image[]', imgUpload[i])
     }
 
-    /*   for (var key of formData.entries()) {
-        console.log(key[0] + ', ' + key[1]); 
-    } */
     props.action?.(formData)
     setFormData(new FormData)
   };
 
   return (
     <div className="App container">
+      <div className={`position-fixed ${isLoading ? 'd-block' : 'd-none'}`}>is loading.....</div>
       <button className="back-button">
         <Link className="link" to="/">
           <span><FiArrowLeft /></span>
@@ -118,6 +159,7 @@ const Form = props => {
               {images?.map((image, key) => (
                 <div key={key}>
                   <div className="image-item">
+                    <button type="button" onClick={() => deleteImage(image)}><span>x</span></button>
                     <img className="image" src={'storage/images/' + image?.path} alt={image?.path} />
                   </div>
                 </div>
@@ -147,7 +189,7 @@ const Form = props => {
               <label htmlFor="ref">Reference</label>
               <input name="ref" placeholder="ref" ref={register} />
             </div>        <div>
-              <label htmlFor="name">Quantity</label>
+              <label htmlFor="quantity">Quantity</label>
               <input name="quantity" placeholder="000" ref={register} />
             </div>
 
