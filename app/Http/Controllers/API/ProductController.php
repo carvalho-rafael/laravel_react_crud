@@ -36,7 +36,7 @@ class ProductController extends Controller
         try {
             $data = [
                 "product" => $id,
-                "images" => $id->images()->get('path')
+                "images" => $id->images()->get(['path', 'id'])
             ];
 
             return response()->json($data);
