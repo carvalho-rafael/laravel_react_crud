@@ -56,8 +56,8 @@ class ProductController extends Controller
             $images = $request->file('image');
 
             if ($request->hasFile('image')) {
-                foreach($images as $im){
-                    $imageController->store($im, $product->id);
+                foreach($images as $key=>$im){
+                    $imageController->store($im, $product->id, $key);
                 }
             }
 
@@ -77,8 +77,8 @@ class ProductController extends Controller
             $images = $request->file('image');
 
             if ($request->hasFile('image')) {
-                foreach($images as $im){
-                    $imageController->store($im, $product->id);
+                foreach($images as $key=>$im){
+                    $imageController->store($im, $product->id, $key);
                 }
             }
             return response()->json(['message' => 'ok']);

@@ -12,11 +12,11 @@ class ImageController extends Controller {
         $this->image = $image;
     }
 
-    public function store($requestImage, $product_id) {
+    public function store($requestImage, $product_id, $index) {
         try {
             $image = new Image();
             $repo = new ImageRepository;
-            $filename = $repo->saveImage($requestImage);
+            $filename = $repo->saveImage($requestImage, $index);
 
             $image->path = $filename;
             $image->product_id = $product_id;

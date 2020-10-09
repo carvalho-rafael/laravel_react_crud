@@ -5,10 +5,10 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class ImageRepository
 {
-    public function saveImage($image) {
+    public function saveImage($image, $index) {
         if (!is_null($image)) {
-            $extension = $image->getClientOriginalName();
-            $fileName = date('Y-m-d_H:i:s') .'.' . $extension; 
+            $name = $image->getClientOriginalName();
+            $fileName = date('Y-m-d_H:i:s') .'.' . $index . $name; 
 
             $image->storeAs('public/images', $fileName);
                     
