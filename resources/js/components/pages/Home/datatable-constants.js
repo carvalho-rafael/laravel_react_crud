@@ -64,7 +64,6 @@ function rowOptions(row) {
                     <span>
                         <FiEdit />
                     </span>
-                    d
                 </Link>
             </button>
         </div>

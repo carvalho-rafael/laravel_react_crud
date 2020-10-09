@@ -51,10 +51,8 @@ function Edit(props) {
 
     return (
         <>
-            <header>
-                <Alert content={alertContent} alert={alert} alertType={alertType}></Alert>
-            </header>
-            <Form product={product} buttonLabel={"update"} action={updateProduct} sent={sent} isLoading={isLoading}/>
+            <Alert content={alertContent} alert={alert} alertType={alertType}></Alert>
+            <Form product={product} buttonLabel={"update"} action={updateProduct} sent={sent} isLoading={isLoading} />
         </>
     )
 }

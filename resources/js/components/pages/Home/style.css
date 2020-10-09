@@ -41,11 +41,29 @@
     height: 50px;
 }
 
-.update-button {
-    display: block;
-}
-
 .update-button a {
+    display: block;
     padding: 10px;
     margin: 0;
+}
+
+.rdt-container {
+    padding: 20px;
+    background-color: #fff;
+}
+
+.rdt_TableHeader div:first-child {
+    padding: 10px;
+    font-size: 38px;
+    font-weight: bold;
+    color: #666666;
+}
+
+.rdt_TableHeadRow > div{
+    background-color: #3490dc!important;
+    color: #ffffff!important;
+}
+
+.rdt_TableRow{
+    color: #3490dc!important;
 }

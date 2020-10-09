@@ -5,6 +5,8 @@ import api from '../../services/api';
 import MyEditor from '../../utils/wysiwyg';
 import ReactHtmlParser from 'react-html-parser'
 
+import Loader from 'react-loader-spinner'
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import { Link } from 'react-router-dom'
 import { FiArrowLeft } from 'react-icons/fi'
 
@@ -131,7 +133,6 @@ const Form = props => {
 
   return (
     <div className="App container">
-      <div className={`position-fixed ${isLoading ? 'd-block' : 'd-none'}`}>is loading.....</div>
       <button className="back-button">
         <Link className="link" to="/">
           <span><FiArrowLeft /></span>
@@ -140,8 +141,8 @@ const Form = props => {
       </button>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
-          <div className="col-md-8">
-            <div className="image-container">
+          <div className="col-md-8 form-panel">
+            <div className="image-container form-field-item">
               <div className="img-input-container">
                 <label className="img-input-label" htmlFor="img-input">ADD  IMAGE</label>
                 <input id="img-input" type="file" name="image[]" multiple onChange={handleChange} />
@@ -150,12 +151,12 @@ const Form = props => {
                 <div key={key}>
                   <div className="image-item">
                     <button type="button" onClick={() => deleteImgUpload(image)}><span>x</span></button>
-                    <img id={"imgUpload" + (key)} className="image" alt={image} />
+                    <img id={"imgUpload" + (key)} className="image image-upload" alt={image} />
                   </div>
                 </div>
               ))}
             </div>
-            <div className="image-container">
+            <div className="image-container form-field-item">
               {images?.map((image, key) => (
                 <div key={key}>
                   <div className="image-item">
@@ -165,16 +166,16 @@ const Form = props => {
                 </div>
               ))}
             </div>
-            <div>
+            <div className="form-field-item">
               <label htmlFor="name">Name</label>
               <input name="name" placeholder="name" ref={register} />
             </div>
-            <div>
+            <div className="form-field-item">
               <label htmlFor="resume">Resume</label>
-              <textarea rows="8" name="resume" ref={register}>
+              <textarea rows="3" name="resume" ref={register}>
               </textarea>
             </div>
-            <div>
+            <div className="form-field-item">
               <label htmlFor="description">Description</label>
 
               <MyEditor description={description} reference={register} />
@@ -184,20 +185,21 @@ const Form = props => {
             </div>
           </div>
 
-          <div className="col-md-2">
-            <div>
-              <label htmlFor="ref">Reference</label>
+          <div className="col-md-4 form-panel">
+            <div className="form-field-item">
+              <label htmlFor="ref">Reference</label> <br/>
               <input name="ref" placeholder="ref" ref={register} />
-            </div>        <div>
-              <label htmlFor="quantity">Quantity</label>
+            </div>        
+            <div className="form-field-item">
+              <label htmlFor="quantity">Quantity</label> <br/>
               <input name="quantity" placeholder="000" ref={register} />
             </div>
 
-            <div>
-              <label htmlFor="price">Price</label>
+            <div className="form-field-item">
+              <label htmlFor="price">Price</label> <br/>
               <input name="price" placeholder="price" ref={register} />
             </div>
-            <label className="control-label" htmlFor="category_id">Categories<br />
+            <label className="control-label form-field-item">Categories<br />
               {categories?.map((i) => (
                 <div key={i.id}>
                   <input
@@ -213,11 +215,18 @@ const Form = props => {
               ))}
               {errors.category_id && <div className="form_error">Category is required</div>}
             </label>
-            <div>
+            <div className="form-field-item">
               <label htmlFor="active">Active</label>
               <input type="checkbox" id="active" name="active" ref={register} />
             </div>
-            <input type="submit" value={props.buttonLabel} />
+            <button className="btn btn-primary" type="submit" disabled={isLoading}>{props.buttonLabel}</button>
+            <div className={`position-absolute d-inline`} ><Loader
+              type="Puff"
+              visible={isLoading}
+              color="#00BFFF"
+              height={30}
+              width={30}
+            /></div>
           </div>
         </div>
 

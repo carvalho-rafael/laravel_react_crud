@@ -4,7 +4,7 @@ const Alert = props => {
 
   return (
     <div
-      className={`alert alert-${props.alertType} alert-dismissible fade ${props.alert ? 'show' : ''}`}
+      className={`alert alert-${props.alertType} alert-dismissible fade ${props.alert ? 'show d-block' : 'd-none'}`}
       role="alert"
     >
       <strong>{props.content}</strong>

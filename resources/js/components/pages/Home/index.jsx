@@ -78,7 +78,7 @@ const Home = () => {
 
     return (
         <main>
-            <div className="container">
+            <div className="container rdt-container">
                 <DataTable
                     title="Products"
                     columns={DatatableConstants.columns}
