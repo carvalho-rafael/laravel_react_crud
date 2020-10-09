@@ -26,4 +26,6 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::post('/products', 'ProductController@store')->name('store_products');
     Route::put('/products/{id}', 'ProductController@update')->name('update_products');
     Route::delete('/products/{id}', 'ProductController@delete')->name('delete_products');
+
+    Route::delete('/images/{id}', 'ImageController@delete')->name('delete_images');
 });
